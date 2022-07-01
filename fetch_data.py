@@ -1,6 +1,6 @@
 import re
 import requests
-import mysql.connector
+from db_connection import DatabaseOperation
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
@@ -53,31 +53,16 @@ while (len(final_list) < 80):
     append_to_list()
     n += 1
 
-
-# connection to database
-cnx = mysql.connector.connect(user=os.getenv('DB_USER'), password=os.getenv('DB_PASSWORD'), host=os.getenv('DB_HOST'))
-cursor = cnx.cursor()
-
-# create database
-database_name = input('enter database name : ')
-cursor.execute('CREATE DATABASE IF NOT EXISTS %s' % (database_name))
-cursor.execute('USE %s' % (database_name))
-cursor.execute('CREATE TABLE IF NOT EXISTS cars (name VARCHAR(255),place VARCHAR(255), output VARCHAR(255), year VARCHAR(255) ,price VARCHAR(255))')
-cursor.execute('DELETE FROM cars')
-
-with open('database_name.txt','w') as f:
-    f.write(database_name)
-    
 for i in final_list:
     name = i[3].strip()
     place = i[2]
     output = i[1][1]
     year = i[1][0]
     price = i[0]
-    cursor.execute('insert into cars VALUES(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')' % (name, place, output, year, price))
-    cnx.commit()
-
-
-cursor.close()
-cnx.close()
-
+    DatabaseOperation().inset_data(kwargs={
+        'name': name, 
+        'place': place, 
+        'output': output, 
+        'year': year, 
+        'price': price
+    })

@@ -1,22 +1,13 @@
-import mysql.connector
+from db_connection import DatabaseOperation
 from sklearn import tree
 from sklearn import preprocessing
 
 
-# connection to database
-
-cnx = mysql.connector.connect(user='root', 
-                              password='1996', 
-                              host='127.0.0.1', 
-                              database='car_info', 
-                              auth_plugin='mysql_native_password')
-cursor = cnx.cursor()
-
-
 # fetch data
-cursor.execute('SELECT name, place, output, year, price FROM cars')
+query_result = DatabaseOperation.execute_query('SELECT name, place, output, year, price FROM cars')
+
 cars_list = []
-for (name, place, output, year, price) in cursor:
+for (name, place, output, year, price) in query_result:
     cars_list.append([name, place, output, year, price])
 
 
@@ -52,6 +43,3 @@ new_data = [car_details]
 answer = myMachine.predict(new_data)
 print('your car worth {} tomans'.format(answer[0]))
 
-
-cursor.close()
-cnx.close()
