@@ -57,4 +57,5 @@ When you are done, you're ready test the project.
 
 
 to run the project:
+
     (venv) ➜ car-prdiction python3 ./fetch_data.py
